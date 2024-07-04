@@ -1,0 +1,11 @@
+Press_Button:
+<BoxLayout>:
+    orientation: "horizontal"
+    Button:
+        text: 'press me'
+        on_press: print("ouch! More gently please")
+        on_release: print("ahhh")
+        on_state: print("my current state is {}".format(self.state))
+    BoxLayout:
+        orientation: "vertical"
+        spacing: "10dp"

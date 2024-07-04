@@ -1,14 +1,14 @@
-
+from distutils.core import setup
+from logging.handlers import MemoryHandler
+from ssl import MemoryBIO
 import pyttsx3 #pip install pyttsx3
 import datetime
-from rsa import PrivateKey, PublicKey
 import speech_recognition as sr #pip install SpeechRecognition
 import wikipedia # pip install wikipedia
 import webbrowser
 import os
 import smtplib
-import rsa
-from subprocess import call
+import tkinter as tk
 
 engine = pyttsx3.init('sapi5')
 engine.say("Hello boss")
@@ -19,18 +19,6 @@ voice = engine.getProperty('voices')
 engine.setProperty('voices', voice[1].id)
 newVoiceRate = 210
 engine.setProperty('rate', newVoiceRate)
-
-class CallPy(object):
-    def __init__(self, path='C:\Users\ps946\Desktop\python\namp.py'):
-        self.path = path
-
-    def __call__python_file(self):
-        call(["Python3", "{}".format(self.path)])
-
-if __name__=="__main__":
-    c =CallPy()
-    c.__call__python_file()
-
 
 def speak(audio):
     engine.say(audio)
@@ -78,19 +66,6 @@ def sendEmail(to, content):
     server.sendmail('youremail@gmail.com', to, content)
     server.close()
 
-def encryptor():
-    PublicKey, PrivateKey = rsa.newkeys(512)
-    file =input("Enter file location and name")
-    print(file)
-    encFile =rsa.enrypt(file.encode(),PublicKey)
-    print("encrypted file", encFile)
-
-def decryptor():
-    input("Enter the encrypted filr location and name")
-    decFile = rsa.decrypt(decFile, PrivateKey).decode()
-
-
-
 
 def takeCommand():
     r = sr.Recognizer()
@@ -111,13 +86,32 @@ def takeCommand():
     return query
 
 if __name__ == "__main__":
-
+    memory = {}
+  
     wishme()
 
     while True:
     # if 1:
         query = takeCommand().lower()
         # Logic for executing tasks based on query
+   
+        if "hello" in query:
+            speak("Hello, how can I help you?")
+        elif "what's your name" in query:
+            speak("I am Jarvis, your AI assistant.")
+        elif "remember" in query:
+            key = query.split(" ")[-1]
+            value = query.split("that")[-1].strip(key).strip()
+            memory[key] = value
+            speak(f"I will remember that {key} is {value}")
+        elif "do you know" in query:
+            key = query.split(" ")[-1]
+            if key in memory:
+                speak(f"Yes, {key} is {memory[key]}")
+            else:
+                speak("I don't have that information.")
+        
+
         if 'wikipedia' in query:
             speak('Searching Wikipedia...')
             query = query.replace("wikipedia", "")
@@ -201,18 +195,90 @@ if __name__ == "__main__":
             search = takeCommand().lower()
             webbrowser.open('youtube.com' + search)
 
+
         elif 'news' in query:
             news = webbrowser.open_new_tab("https://timesofindia.indiatimes.com/home/headlines")
             speak('Here are some headlines from the Times of India,Happy reading')
             time.sleep(6)
 
-        elif 'encrypt' in query:
-            file = takeCommand().lower()
-            print("file")
-            encryptor().file()
-
 
 takeCommand()
+
+import schedule
+import eval
+import pydub
+import opencv
+
+def get_weather_forecast(city):
+    webbrowser.open("www.accuweather.com")
+    
+
+def play_music(file):
+    # code to play music files using pydub library
+    pass
+
+def calculate(expression):
+    # code to perform mathematical calculations using the eval() function
+    return eval(expression)
+
+def set_reminder(task, time):
+    # code to schedule reminders for the future using the schedule library
+    schedule.every().day.at(time).do(task)
+
+def add_task(task):
+    # code to add a task to the to-do list
+    todo_list.append(task)
+
+def edit_task(task_index, new_task):
+    # code to edit a task in the to-do list
+    todo_list[task_index] = new_task
+
+def remove_task(task_index):
+    # code to remove a task from the to-do list
+    todo_list.pop(task_index)
+
+def take_photo():
+    # code to take a photo using the computer's camera using the opencv library
+    pass
+
+def process_nlp_request(request):
+    # code to understand and respond to user requests using NLP
+    pass
+
+todo_list = []
+
+while True:
+    user_input = input("What can I do for you? ")
+    if user_input == "get weather forecast":
+        city = input("For which city? ")
+        weather_forecast = get_weather_forecast(city)
+        print("The weather forecast for {} is: {}".format(city, weather_forecast))
+    elif user_input == "play music":
+        file = input("Which file? ")
+        play_music(file)
+    elif user_input.startswith("calculate"):
+        expression = user_input.split(" ", 1)[1]
+        result = calculate(expression)
+        print("The result is: {}".format(result))
+    elif user_input.startswith("set reminder"):
+        task = input("What is the task? ")
+        time = input("At what time? (HH:MM) ")
+        set_reminder(task, time)
+    elif user_input == "add task":
+        task = input("What is the task? ")
+        add_task(task)
+    elif user_input == "edit task":
+        task_index = int(input("Which task (index)? "))
+        new_task = input("What is the new task? ")
+        edit_task(task_index, new_task)
+    elif user_input == "remove task":
+        task_index = int(input("Which task (index)? "))
+        remove_task(task_index)
+    elif user_input == "take photo":
+        take_photo()
+    else:
+        process_nlp_request(user_input)
+
     
 
 
